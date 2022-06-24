@@ -1,0 +1,28 @@
+pipeline {
+    agent {label 'macos'}
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Builing'
+                git branch: 'master', credentialsId: '166087ca-f883-4985-a8a8-e4ad426d4b9d', url: 'https://github.com/tjiang200/JenkinsPipelineDemo.git'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing'
+                echo "**** ${JOB_NAME} - workspace: ${WORKSPACE} *****"
+                sh '''
+                  pwd
+                  ls -ltr
+                  python scripts/test.py
+                '''
+            }
+        }
+    }
+    post {
+        always {
+            echo currentBuild.currentResult
+        }
+    }
+}
